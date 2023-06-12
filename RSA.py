@@ -11,7 +11,12 @@ def queryFactors(n):
             s.append(int(f[0]))
     return s
 
+def pqe_4_d(p,q,e):
+    phi = (p-1)*(q-1)
+    d = gmpy2.invert(e,phi)
+
 def enc(e,n,c):
+
     print('a')
 
 n = '88503001447845031603457048661635807319447136634748350130947825183012205093541'

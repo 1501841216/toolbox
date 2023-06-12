@@ -14,6 +14,7 @@ def queryFactors(n):
 def pqe_4_d(p,q,e):
     phi = (p-1)*(q-1)
     d = gmpy2.invert(e,phi)
+    return d
 
 def enc(e,n,c):
 

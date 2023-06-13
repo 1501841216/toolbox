@@ -1,5 +1,6 @@
 import gmpy2
 import requests
+from Crypto.Util.number import long_to_bytes,bytes_to_long
 
 def queryFactors(n):
     s = []
@@ -14,6 +15,8 @@ def queryFactors(n):
 def pqe_4_d(p,q,e):
     phi = (p-1)*(q-1)
     d = gmpy2.invert(e,phi)
+
+    # return long_to_bytes(d)
     return d
 
 def enc(e,n,c):

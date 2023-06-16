@@ -19,7 +19,7 @@ def try_fence(str):
 
     for i in range(2,int(len(str))-1):
         print(i)
-        strr = fence.fence_cipher_decrypt(str,i)
+        strr = fence.decrypt_fence(str,i)
         print(strr)
 
 

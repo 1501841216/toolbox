@@ -1,45 +1,37 @@
-dic = {
-    'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---',
-    'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-',
-    'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..',
-    '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
-    '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--', '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...',
-    ':': '---...', ';': '-.-.-.', '=': '-...-', '+': '.-.-.', '-': '-....-', '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.',
-    ' ': '/'
-        }
-
-def translate_characters(string,a,b):
-    translation_table = str.maketrans(a+b, b+a)
-    return string.translate(translation_table)
-
+dic = {'A': '._', 'B': '_...', 'C': '_._.', 'D': '_..', 'E': '.', 'F': '.._.',
+       'G': '__.', 'H': '....', 'I': '..', 'J': '.___', 'K': '_._', 'L': '._..',
+       'M': '__', 'N': '_.', 'O': '___', 'P': '.__.', 'Q': '__._', 'R': '._.',
+       'S': '...', 'T': '_', 'U': '.._', 'V': '..._', 'W': '.__', 'X': '_.._',
+       'Y': '_.__', 'Z': '__..',
+       '1': '.____', '2': '..___', '3': '...__', '4': '...._', '5': '.....',
+       '6': '_....', '7': '__...', '8': '___..', '9': '____.', '0': '_____',
+       ' ': ' '}
 def Morse_encode(str):
     strr = ''
     for i in str:
         if i.upper() in dic:
-            strr +=dic[i.upper()]
+            strr += dic[i] + ' '
         else:
-            # Include non-alphanumeric characters as they are
             strr += i
-    return dic
+    return strr
 
-def Morse_decode(str,_,a,b):
-    #以_为划分，a，b其一充当点划
-    inv_dic = {v: k for k,v in dic.items()}
-    current_char = ''
+def decrypt(morse_code,_):
+    inv_morse_code = {v: k for k, v in dict.items()}
+    morse_code += ' '
+
     message = ''
-    for char in str:
-        #add _ at the end of the strinf, or the last word won't be recognized
+    current_symbol = ''
+    for char in morse_code:
         if char != _:
-            current_char += char
+            current_symbol += char
         else:
-            if char in inv_dic:
-                message += inv_dic[current_char]
+            if current_symbol in inv_morse_code:
+                message += inv_morse_code[current_symbol]
             else:
-                inv_current_char = translate_characters(current_char,a,b)
-                if inv_current_char in inv_dic:
-                    message += inv_dic[inv_current_char]
-                else:
-                    print("wrong")
-            current_char = ''
+
+                if not found:
+                    message += current_symbol  # Include unknown symbols as they are
+
+            current_symbol = ''
 
     return message

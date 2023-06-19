@@ -31,7 +31,7 @@ def pqe_4_d(p, q, e):
     return d
 
 
-def enc(e,n,c):
+def enc(e, n, c):
 
     print('a')
 

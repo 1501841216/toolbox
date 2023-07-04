@@ -7,7 +7,6 @@ import math
 import gmpy2
 import getopt
 import requests
-from Crypto.Util.number import long_to_bytes, bytes_to_long
 from Crypto.PublicKey import RSA
 
 

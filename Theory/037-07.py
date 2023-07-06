@@ -66,8 +66,13 @@ def twin_primes(prime_set, step):
 def quadruplet(prime_set, step1, step2, step3):
     quad_primes = []
     for i in range(len(prime_set)):
-        if prime_set[i] + step1 and prime_set[i] + step2 and prime_set[i] + step3 in prime_set:
-            quad_primes.append((prime_set[i], prime_set[i] + step1, prime_set[i] + step2, prime_set[i] + step3))
+        if prime_set[i] + step1 and\
+                prime_set[i] + step2 and\
+                prime_set[i] + step3 in prime_set:
+            quad_primes.append((prime_set[i],
+                                prime_set[i] + step1,
+                                prime_set[i] + step2,
+                                prime_set[i] + step3))
     return quad_primes
 
 

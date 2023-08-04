@@ -7,7 +7,9 @@ import math
 import gmpy2
 import getopt
 import requests
+from functools import reduce
 from Crypto.PublicKey import RSA
+from Crypto.Util.number import long_to_bytes, bytes_to_long
 
 
 def query_factors(n):
@@ -30,9 +32,15 @@ def pqe_4_d(p, q, e):
     return d
 
 
-def enc(e, n, c):
-
-    print('a')
+def enc(n, d, c):
+    h = hex(gmpy2.powmod(c, d, n))[2:]
+    if len(h) % 2 == 1:
+        h = '0' + h
+    print(h)
+    # s = h.decode('hex')
+    print(type(h))
+    s = long_to_bytes(int(h, 16))
+    return s
 
 
 def pem(home, pubkey_file, enc_file):
@@ -62,10 +70,36 @@ def pem(home, pubkey_file, enc_file):
         f = f.read()
         print(rsa.decrypt(f, key))
 
+def hastad(n_l, c_l, attack_num):
+    sum = 0
+    prod = reduce(lambda a, b: a*b, n_l)
+    for n_l_i, c_l_i in zip(n_l, c_l):
+        p = prod // n_l_i
+        sum += c_l_i * gmpy2.invert(p, n_l_i) * p
+    m_num = int(sum % prod)
+    m = gmpy2.iroot(m_num, attack_num)[0]
+
+    return bytes.fromhex(hex(m)[2:])
+
+
+
+
 
 # n = '88503001447845031603457048661635807319447136634748350130947825183012205093541'
 # queryFactors(n)
 
+if __name__ == '__main__':
+    # pem("D:/CTF/crypto/547de1d50b95473184cd5bf59b019ae8/", "pubkey.pem", "flag.enc")
 
-# pem("D:/CTF/crypto/547de1d50b95473184cd5bf59b019ae8/", "pubkey.pem", "flag.enc")
-pem("E:\\CTF\\CTFQD\\Crypto\\547de1d50b95473184cd5bf59b019ae8\\", "pubkey.pem", "flag.enc")
+    # pem("D:/CTF/crypto/547de1d50b95473184cd5bf59b019ae8/", "pubkey.pem", "flag.enc")
+    pem("E:\\CTF\\CTFQD\\Crypto\\547de1d50b95473184cd5bf59b019ae8\\", "pubkey.pem", "flag.enc")
+    # NO.GFSJ0442 cr3
+    p = 0xa6055ec186de51800ddd6fcbf0192384ff42d707a55f57af4fcfb0d1dc7bd97055e8275cd4b78ec63c5d592f567c66393a061324aa2e6a8d8fc2a910cbee1ed9
+    q = 0xfa0f9463ea0a93b929c099320d31c277e0b0dbc65b189ed76124f5a1218f5d91fd0102a4c8de11f28be5e4d0ae91ab319f4537e97ed74bc663e972a4a9119307
+    e = 0x6d1fdab4ce3217b3fc32c9ed480a31d067fd57d93a9ab52b472dc393ab7852fbcb11abbebfd6aaae8032db1316dc22d3f7c3d631e24df13ef23d3b381a1c3e04abcc745d402ee3a031ac2718fae63b240837b4f657f29ca4702da9af22a3a019d68904a969ddb01bcf941df70af042f4fae5cbeb9c2151b324f387e525094c41
+    c = 0x7fe1a4f743675d1987d25d38111fae0f78bbea6852cba5beda47db76d119a3efe24cb04b9449f53becd43b0b46e269826a983f832abb53b7a7e24a43ad15378344ed5c20f51e268186d24c76050c1e73647523bd5f91d9b6ad3e86bbf9126588b1dee21e6997372e36c3e74284734748891829665086e0dc523ed23c386bb520
+    d = pqe_4_d(p, q, e)
+    print(d)
+    n = p*q
+    s = enc(n, d, c)
+    print(s)

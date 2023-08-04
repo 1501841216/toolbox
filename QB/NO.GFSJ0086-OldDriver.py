@@ -5,7 +5,8 @@ import gmpy2
 from Crypto.Util.number import long_to_bytes, bytes_to_long
 # from RSA import query_factors
 
-the_dir = 'E:\\CTF\\CTFQD\\Crypto\\4981449e0af24b10a4125ee647270fe3'
+# the_dir = 'E:\\CTF\\CTFQD\\Crypto\\4981449e0af24b10a4125ee647270fe3'
+the_dir = 'D:\\CTF\\crypto\\4981449e0af24b10a4125ee647270fe3'
 f = open(the_dir + "\\enc.txt", 'r', )
 n_list = []
 c_list = []
@@ -14,8 +15,8 @@ for line in f:
     c = re.findall(r"\"c\": (.*), \"e", line)[0]
     e = re.findall(r"\"e\": (.*), \"n", line)[0]
     n = re.findall(r"\"n\": (.*)}", line)[0]
-    n_list.append(n)
-    c_list.append(c)
+    n_list.append(int(n))
+    c_list.append(int(c))
 
 def chinese_remainder(n, a):#
     sum = 0
@@ -25,6 +26,8 @@ def chinese_remainder(n, a):#
         sum += a_i * gmpy2.invert(p, n_i) * p
     return int(sum % prod)
 
-m_9=chinese_remainder(n_list[:5],c_list[:5])
-m=gmpy2.iroot(m_9,9)[0]
+print(n_list)
+print(c_list)
+m_9=chinese_remainder(n_list, c_list)
+m=gmpy2.iroot(m_9, 10)[0]
 print(bytes.fromhex(hex(m)[2:]))

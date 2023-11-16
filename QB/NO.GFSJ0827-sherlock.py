@@ -1,4 +1,9 @@
 from Crypto.Util.number import long_to_bytes, bytes_to_long
+# 与JO252enc作对比，本例使用replace作替换
+
+
+
+
 # Extract lowercase in a string
 def extract(string1):
     length = len(string1)

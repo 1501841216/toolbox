@@ -51,6 +51,7 @@ def pem(home, pubkey_file, enc_file):
     # 正则读取ret中exponent所在的第五列，为列表，取第一个元素，为字符串
     # ['RSA Public-Key: (256 bit)\n', 'Modulus:\n', '    00:c2:63:6a:e5:c3:d8:e4:3f:fb:97:ab:09:02:8f:\n',
     #  '    1a:ac:6c:0b:f6:cd:3d:70:eb:ca:28:1b:ff:e9:7f:\n', '    be:30:dd\n', 'Exponent: 65537 (0x10001)\n',
+    print(ret.index('^Exponent.*'))
     e = int(re.findall(r"Exponent: (.*) \(", ret[6])[0])
     print(e)
     # 将modulus的十六进制转化为十进制

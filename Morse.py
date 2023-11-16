@@ -1,3 +1,5 @@
+import re
+
 dic = {'A': '._', 'B': '_...', 'C': '_._.', 'D': '_..', 'E': '.', 'F': '.._.',
        'G': '__.', 'H': '....', 'I': '..', 'J': '.___', 'K': '_._', 'L': '._..',
        'M': '__', 'N': '_.', 'O': '___', 'P': '.__.', 'Q': '__._', 'R': '._.',
@@ -15,23 +17,15 @@ def Morse_encode(str):
             strr += i
     return strr
 
-def decrypt(morse_code,_):
-    inv_morse_code = {v: k for k, v in dict.items()}
-    morse_code += ' '
-
+def decrypt(morse_code,spliter, dot, line):
+    inv_dic = {v: k for k, v in dic.items()}
     message = ''
-    current_symbol = ''
-    for char in morse_code:
-        if char != _:
-            current_symbol += char
-        else:
-            if current_symbol in inv_morse_code:
-                message += inv_morse_code[current_symbol]
-            else:
-
-                if not found:
-                    message += current_symbol  # Include unknown symbols as they are
-
-            current_symbol = ''
+    morse_list = morse_code.split(spliter)
+    for elemt in morse_list:
+        data = elemt.replace(line, '_')
+        print(data)
+        assert data in inv_dic
+        message += inv_dic[data]
 
     return message
+

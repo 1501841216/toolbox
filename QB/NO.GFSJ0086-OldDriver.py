@@ -7,7 +7,7 @@ from Crypto.Util.number import long_to_bytes, bytes_to_long
 
 # the_dir = 'E:\\CTF\\CTFQD\\Crypto\\4981449e0af24b10a4125ee647270fe3'
 the_dir = 'D:\\CTF\\crypto\\4981449e0af24b10a4125ee647270fe3'
-f = open(the_dir + "\\enc.txt", 'r', )
+f = open(the_dir + "\\enc.txt", 'r')
 n_list = []
 c_list = []
 for line in f:

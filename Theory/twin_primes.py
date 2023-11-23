@@ -53,6 +53,18 @@ def eratosthenes2(n):
                 bool_list[i] = False
     return primes
 
+# 基于字典的埃拉托斯尼筛选法
+def sieve_of_eradt(num):
+    max = num + 1
+    d = dict()
+    for i in range(2, max):d[i] = True
+
+    for i in d:
+        factors = range(i, max, i)
+        for f in factors[1:]:
+            d[f] = False
+    lst = [i for i in d if d[i] == True]
+    return lst
 
 # 寻找某个素数集合中的孪生素数
 def twin_primes(prime_set, step):

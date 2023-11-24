@@ -31,6 +31,15 @@ def pqe_4_d(p, q, e):
     # return long_to_bytes(d)
     return d
 
+# 用于phi过大
+def manual_invert(e, phi):
+    d = 0
+    for k in range(1, 100000):
+        if (phi*k+1)%e == 0:
+            d = (phi*k+1)//e
+    print(d)
+    return d
+
 
 def enc(n, d, c):
     h = hex(gmpy2.powmod(c, d, n))[2:]
@@ -83,6 +92,24 @@ def hastad(n_l, c_l, attack_num):
 
     return bytes.fromhex(hex(m)[2:])
 
+# 共模攻击 使用不同的e、相同的n对相同的m进行多次加密
+def comomic_attack(n, e1,e2, c1,c2):
+    s = gmpy2.gcdext(e1, e2)
+    print(s)
+    s1 = s[1]
+    s2 = s[2]
+    # 求模反元素
+    if s1 < 0:
+        s1 = -s1
+        c1 = gmpy2.invert(c1, n)
+        print(c1)
+    elif s2<0:
+        s2 = -s2
+        # c2 = gmpy2.invert(c2, n)
+        c2 = manual_invert(c2, n)
+    m = pow(c1, s1, n)*pow(c2, s2, n)%n
+    print( '[-]m is:' + '{:x}'.format(int(m)).decode('hex'))
+
 
 
 
@@ -96,12 +123,24 @@ if __name__ == '__main__':
     # pem("D:/CTF/crypto/547de1d50b95473184cd5bf59b019ae8/", "pubkey.pem", "flag.enc")
     pem("E:\\CTF\\CTFQD\\Crypto\\547de1d50b95473184cd5bf59b019ae8\\", "pubkey.pem", "flag.enc")
     # NO.GFSJ0442 cr3
-    p = 0xa6055ec186de51800ddd6fcbf0192384ff42d707a55f57af4fcfb0d1dc7bd97055e8275cd4b78ec63c5d592f567c66393a061324aa2e6a8d8fc2a910cbee1ed9
-    q = 0xfa0f9463ea0a93b929c099320d31c277e0b0dbc65b189ed76124f5a1218f5d91fd0102a4c8de11f28be5e4d0ae91ab319f4537e97ed74bc663e972a4a9119307
-    e = 0x6d1fdab4ce3217b3fc32c9ed480a31d067fd57d93a9ab52b472dc393ab7852fbcb11abbebfd6aaae8032db1316dc22d3f7c3d631e24df13ef23d3b381a1c3e04abcc745d402ee3a031ac2718fae63b240837b4f657f29ca4702da9af22a3a019d68904a969ddb01bcf941df70af042f4fae5cbeb9c2151b324f387e525094c41
-    c = 0x7fe1a4f743675d1987d25d38111fae0f78bbea6852cba5beda47db76d119a3efe24cb04b9449f53becd43b0b46e269826a983f832abb53b7a7e24a43ad15378344ed5c20f51e268186d24c76050c1e73647523bd5f91d9b6ad3e86bbf9126588b1dee21e6997372e36c3e74284734748891829665086e0dc523ed23c386bb520
-    d = pqe_4_d(p, q, e)
-    print(d)
-    n = p*q
-    s = enc(n, d, c)
-    print(s)
+    # p = 0xa6055ec186de51800ddd6fcbf0192384ff42d707a55f57af4fcfb0d1dc7bd97055e8275cd4b78ec63c5d592f567c66393a061324aa2e6a8d8fc2a910cbee1ed9
+    # q = 0xfa0f9463ea0a93b929c099320d31c277e0b0dbc65b189ed76124f5a1218f5d91fd0102a4c8de11f28be5e4d0ae91ab319f4537e97ed74bc663e972a4a9119307
+    # e = 0x6d1fdab4ce3217b3fc32c9ed480a31d067fd57d93a9ab52b472dc393ab7852fbcb11abbebfd6aaae8032db1316dc22d3f7c3d631e24df13ef23d3b381a1c3e04abcc745d402ee3a031ac2718fae63b240837b4f657f29ca4702da9af22a3a019d68904a969ddb01bcf941df70af042f4fae5cbeb9c2151b324f387e525094c41
+    # c = 0x7fe1a4f743675d1987d25d38111fae0f78bbea6852cba5beda47db76d119a3efe24cb04b9449f53becd43b0b46e269826a983f832abb53b7a7e24a43ad15378344ed5c20f51e268186d24c76050c1e73647523bd5f91d9b6ad3e86bbf9126588b1dee21e6997372e36c3e74284734748891829665086e0dc523ed23c386bb520
+    # d = pqe_4_d(p, q, e)
+    # print(d)
+    # n = p*q
+    # s = enc(n, d, c)
+    # print(s)
+    # NO.GFSJ0751 best_rsa
+    home = 'E:\\CTF\\CTFQD\\Crypto\\c2d6e7158d7b4cd6a747774f0bdc5f72\\'
+
+    e1 = 117
+    e2 = 65537
+    n = 13060424286033164731705267935214411273739909173486948413518022752305313862238166593214772698793487761875251030423516993519714215306808677724104692474199215119387725741906071553437840256786220484582884693286140537492541093086953005486704542435188521724013251087887351409946184501295224744819621937322469140771245380081663560150133162692174498642474588168444167533621259824640599530052827878558481036155222733986179487577693360697390152370901746112653758338456083440878726007229307830037808681050302990411238666727608253452573696904083133866093791985565118032742893247076947480766837941319251901579605233916076425572961
+    f1 = open(home + 'cipher1.txt','rb')
+    c1 = f1.read()
+    f2 = open(home + 'cipher2.txt','rb')
+    c2 = f2.read()
+    comomic_attack(n,e1,e2,c1,c2)
+

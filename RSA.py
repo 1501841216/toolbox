@@ -47,11 +47,15 @@ def enc(n, d, c):
         h = '0' + h
     print(h)
     # s = h.decode('hex')
-    print(type(h))
     s = long_to_bytes(int(h, 16))
     return s
 
+def nec_4_m(n,e,c):
+    p,q = query_factors(n)
+    d = pqe_4_d(p,q,e)
+    s = enc(n,d,c)
 
+    return s
 def pem(home, pubkey_file, enc_file):
     # 获取公钥信息
     ret = os.popen('openssl rsa -pubin -text -modulus -in ' + home + pubkey_file).readlines()

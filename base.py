@@ -23,9 +23,20 @@ def myb64decoder(b64_str):
 
     # 解码为二进制数据
     data = base64.b64decode(b64_str)
-    print(data)
+    # print(data)
 
     return data
+
+def myb32decoder(b32_str):
+    # base32需要8字节对齐
+    num_padding = 8 - (len(b32_str) % 8)
+    if num_padding < 8:
+        b32_str += "=" * num_padding
+
+    data = base64.b32decode(b32_str)
+
+    return data
+
 
 # 将二进制数据写入文件
 # with open("D:\\CTF\\crypto\\3.zip", "wb") as f:

@@ -6,6 +6,8 @@ import requests
 import numpy as np
 from functools import reduce
 from Crypto.Util.number import long_to_bytes, bytes_to_long
+import Crypto
+
 
 
 def query_factors(n):
@@ -19,6 +21,18 @@ def query_factors(n):
     # p,q = s, s = [p, q]
     return s
 
+def euler_phi(n):
+    result = n   # 初始化结果为n
+    p = 2
+    while(p * p <= n):
+        if (n % p == 0):
+            while (n % p == 0):
+                n //= p
+            result -= result // p
+        p += 1
+    if (n > 1):     # n为质数
+        result -= result // n
+    return result
 
 def pqe_4_d(p, q, e):
     phi = (p-1)*(q-1)

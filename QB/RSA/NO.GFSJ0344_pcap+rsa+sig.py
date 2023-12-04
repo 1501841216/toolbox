@@ -1,7 +1,8 @@
 from Crypto.PublicKey import RSA
 import  Crypto.Signature.pkcs1_15 as pkcs1_15
 import gmpy2
-import base
+# import base
+import base64
 import myRSA
 import re
 
@@ -31,7 +32,7 @@ rsa37 = RSA.construct((n37, e, int(d37)))
 
 # and decrypt the messages from a pcap file!
 # from pcapfile import savefile
-home = 'E:\\CTF\\CTFQD\\Crypto\\f9ba6369b331427eb4f401988f5e6b83\\'
+home = 'D:\\CTF\\crypto\\f9ba6369b331427eb4f401988f5e6b83\\'
 # cf = savefile.load_savefile(open(home + "test.pcap"))
 #
 # output = {}
@@ -54,16 +55,22 @@ f = open(home + 'b64_str')
 data = f.read()
 dic = {}
 for i in data.split('\n'):
-    deb64 = base.myb64decoder(i).decode()
-    # print(deb64)
+    # deb64 = base.myb64decoder(i).decode()
+    deb64 = base64.b64decode(i).decode()
+    print(deb64)
     seq = int(re.findall(r"SEQ = (.*?);",deb64)[0])
     print(seq)
     c1 = int(re.findall(r"DATA = (.*?)L;",deb64)[0],16)
     c2 = int(re.findall(r"SIG = (.*?)L;",deb64)[0],16)
-#     # decrypted = rsa37._decrypt(c1)
-#     decrypted = myRSA.ndc_4_m(n37, int(d37), c1)
-    decrypted = myRSA.verify(rsa37, rsa37, c1, c2)
-    dic[int(seq)] = decrypted[1]
+    # decrypted = rsa37._decrypt(c1)
+    # decrypted = myRSA.ndc_4_m(n37, int(d37), c1)
+    decrypted = myRSA.verify(rsa13, rsa37, c1, c2)
+    # 解码的信息和验证的信息一致才行
+    if decrypted[0] == decrypted[1]:
+        dic[seq] = decrypted[0]
+    # dic[int(seq)] = decrypted
+    # print(decrypted[0])
+    # print(decrypted[1])
 #     # pkcs1_15.new(rsa13).verify(c1,c2)
 #     # print(rsa13.sign(decrypted, ''))
 #

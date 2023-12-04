@@ -85,7 +85,7 @@ def pqec_4_m(p,q,e,c):
 def verify(rsa1, rsa2, data, sig):
     assert (rsa1.e == rsa2.e)
     a1 = gmpy2.powmod(sig, rsa1.e, rsa1.n)
-    a2 = gmpy2.powmod(data, rsa1.d, rsa2.n)
+    a2 = gmpy2.powmod(data, rsa2.d, rsa2.n)
     print(long_to_bytes(a1))
     print(long_to_bytes(a2))
 

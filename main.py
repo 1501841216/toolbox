@@ -5,7 +5,7 @@
 import caesar
 import fence
 import Morse
-import RSA
+import myRSA
 import bill
 
 def try_caesar(str):

@@ -6,7 +6,7 @@ import requests
 import numpy as np
 from functools import reduce
 from Crypto.Util.number import long_to_bytes, bytes_to_long
-import Crypto
+import libnum
 
 
 
@@ -51,7 +51,7 @@ def manual_invert(e, phi):
 
     return d
 
-def enc(n, d, c):
+def ndc_4_m(n, d, c):
     h = hex(gmpy2.powmod(c, d, n))[2:]
     if len(h) % 2 == 1:
         h = '0' + h
@@ -63,16 +63,33 @@ def enc(n, d, c):
 def nec_4_m(n,e,c):
     p,q = query_factors(n)
     d = pqe_4_d(p,q,e)
-    s = enc(n,d,c)
+    s = ndc_4_m(n, d, c)
 
     return s
 
 def pqec_4_m(p,q,e,c):
     d = pqe_4_d(p,q,e)
     print(d)
-    s = enc(p*q,d,c)
+    s = ndc_4_m(p * q, d, c)
 
     return s
+
+# def verify(e,n_A, d_A, data, n_B, d_B, sig):
+#     a1 = gmpy2.powmod(sig, e, n_A)
+#     a2 = gmpy2.powmod(data, d_A, n_B)
+#     print(a1)
+#     print(a2)
+#
+#     return a1, a2
+
+def verify(rsa1, rsa2, data, sig):
+    assert (rsa1.e == rsa2.e)
+    a1 = gmpy2.powmod(sig, rsa1.e, rsa1.n)
+    a2 = gmpy2.powmod(data, rsa1.d, rsa2.n)
+    print(long_to_bytes(a1))
+    print(long_to_bytes(a2))
+
+    return long_to_bytes(a1), long_to_bytes(a2)
 
 def pem(home, pubkey_file, enc_file):
     # 获取公钥信息

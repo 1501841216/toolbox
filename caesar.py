@@ -29,3 +29,12 @@ def caesar_decode(ciphertext, shift):
         else:
             plaintext += char
     return plaintext
+
+code = 'afZ_r[[X+*(ShTRdOO`ZLJHRYNLLAOM?=;Q;AS'
+key = 5
+flag = []
+for i in code:
+    s1 = chr(ord(i) + key)
+    flag.append(s1)
+    key += 1
+print(''.join(flag))

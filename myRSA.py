@@ -3,7 +3,7 @@ import re
 import rsa
 import gmpy2
 import requests
-import numpy as np
+# import numpy as np
 from functools import reduce
 from Crypto.Util.number import long_to_bytes, bytes_to_long
 import libnum

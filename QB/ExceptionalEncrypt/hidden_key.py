@@ -8,17 +8,21 @@ key = []
 def rand(rng):
     return rng - random.randrange(rng)
 
-out = out << 12
-for i in long_to_bytes(out):
-    key.append(i)
-print(key)
-
-random.seed(int(hashlib.md5(bytes(key)).hexdigest(),16))
-
+# out = out << 12
+#
+# bout = long_to_bytes(out)
+#
+# for i in bout:
+#     key.append(i)
+# print(key)
 flag = []
-for i in range(len(m)):
-    xor = m[i] ^ rand(256)
-    flag.append(chr(xor))
-
-print(flag)
-
+for k in range(2**12):
+    tip = 1
+    key = long_to_bytes((out<<12)^k)
+    random.seed(int(hashlib.md5(bytes(key)).hexdigest(),16))
+    for i in range(len(m)):
+        xor = m[i] ^ rand(256)
+        flag.append(chr(xor))
+    # if 'flag' in ''.join(flag):
+    print(''.join(flag))
+        # break

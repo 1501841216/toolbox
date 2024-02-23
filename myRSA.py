@@ -6,7 +6,7 @@ import requests
 # import numpy as np
 from functools import reduce
 from Crypto.Util.number import long_to_bytes, bytes_to_long
-import libnum
+# import libnum
 
 
 
@@ -114,7 +114,7 @@ def pem(home, pubkey_file, enc_file):
 
     # 解密，以二进制读模式读取密文
     with open(home + enc_file, 'rb') as f:
-        # f：公钥加密的结果， key：私钥
+        # f：公钥加密的结果， key： 私钥
         f = f.read()
         print(rsa.decrypt(f, key))
 

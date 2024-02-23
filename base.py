@@ -59,7 +59,7 @@ def decode_with_custom_base64(encoded_string, custom_alphabet):
     return decoded_string
 
 # Usage
-custom_alphabet = 'LAGRANGELAGRANGELAGRANGELAGRANGELAGRANGELAGRANGELAGRANGELAGRANGE'  # Should be 64 characters long
-encoded_string = 'TVTTTVTXABYUXTXTXCARYYXAZCYYYUXV='
-decoded_string = decode_with_custom_base64(encoded_string, custom_alphabet)
-print(decoded_string)
+# custom_alphabet = 'LAGRANGELAGRANGELAGRANGELAGRANGELAGRANGELAGRANGELAGRANGELAGRANGE'  # Should be 64 characters long
+# encoded_string = 'TVTTTVTXABYUXTXTXCARYYXAZCYYYUXV='
+# decoded_string = decode_with_custom_base64(encoded_string, custom_alphabet)
+# print(decoded_string)

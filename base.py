@@ -1,4 +1,5 @@
 import base64
+import string
 # c = "ZmxhZ3tiGNXlXjHfaDTzN2FfK3LycRTpc2L9"
 # #Custom base64 table
 # str_custom_base = "ABCDEFQRSTUVWXYPGHIJKLMNOZabcdefghijklmnopqrstuvwxyz0123456789+/"
@@ -42,3 +43,23 @@ def myb32decoder(b32_str):
 # with open("D:\\CTF\\crypto\\3.zip", "wb") as f:
 #     f.write(myb64decoder(b64_str))
 
+def decode_with_custom_base64(encoded_string, custom_alphabet):
+    # Standard base64 alphabet
+    standard_alphabet = string.ascii_uppercase + string.ascii_lowercase + string.digits + '+/'
+
+    # Create a translation table
+    translation_table = str.maketrans(custom_alphabet, standard_alphabet)
+
+    # Translate the encoded string
+    translated_string = encoded_string.translate(translation_table)
+
+    # Decode the translated string
+    decoded_string = base64.b64decode(translated_string)
+
+    return decoded_string
+
+# Usage
+custom_alphabet = 'LAGRANGELAGRANGELAGRANGELAGRANGELAGRANGELAGRANGELAGRANGELAGRANGE'  # Should be 64 characters long
+encoded_string = 'TVTTTVTXABYUXTXTXCARYYXAZCYYYUXV='
+decoded_string = decode_with_custom_base64(encoded_string, custom_alphabet)
+print(decoded_string)

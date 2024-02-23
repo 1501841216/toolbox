@@ -1,3 +1,4 @@
+# aka变种维吉尼亚
 import beaufort
 from itertools import permutations
 def xor_decrypt(ciphertext, key):

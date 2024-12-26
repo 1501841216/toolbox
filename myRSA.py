@@ -7,7 +7,17 @@ import requests
 from functools import reduce
 from Crypto.Util.number import long_to_bytes, bytes_to_long
 # import libnum
+from Crypto.PublicKey import RSA
+import random
 
+from sympy import true
+
+
+def is_factor(a, b):
+    return b % a == 0
+
+"""__________________________________________________________________________________________"""
+"""________________________________FACTOR_N_________________________________________________"""
 
 
 def query_factors(n):
@@ -21,6 +31,46 @@ def query_factors(n):
     # p,q = s, s = [p, q]
     return s
 
+
+# 拉斯维加斯随机数分解n，需要知道kphi
+def las_vegas_factor(N, kphi):
+    s = 0
+    u = kphi
+    while u % 2 == 0:
+        print("wrong")
+    w = random.randint(2, N - 2)
+    while true:
+        w_pow = pow(w, pow(2, s) * u, N)
+        if w_pow == 1:
+            if s == 0:
+                break
+            elif w_pow != -1:
+                factor = gmpy2.gcd(N, pow(w, pow(2, s - 1) * u, N) + 1)
+                if factor > 1:
+                    print("factor is ", factor)
+                    return factor
+        else:
+            s += 1
+
+
+# pollard_rho分解n，需要p-1 q-1有明显的公因子
+def mapx(x,n):
+    x=(pow(x,n-1,n)+3)%n    #pow(x,n-1,n)是为了减小数值，加速运算，
+    return x
+
+def pollard_rho (x1,x2,n):
+    while True:
+        x1=mapx(x1,n)
+        t = mapx(x2,n)
+        x2=mapx(t,n)
+        p=gmpy2.gcd(x1-x2,n)
+        if (p == n):
+            print("fail")
+            return
+        elif (p!=1):
+            print("p: "+str(p))
+            print("q: "+str(n//p))
+            break
 def euler_phi(n):
     result = n   # 初始化结果为n
     p = 2
@@ -34,6 +84,9 @@ def euler_phi(n):
         result -= result // n
     return result
 
+
+"""__________________________________________________________________________________________"""
+"""____________________________REGULAR_METHODS_______________________________________________"""
 def pqe_4_d(p, q, e):
     phi = (p-1)*(q-1)
     d = gmpy2.invert(e, phi)
@@ -69,7 +122,7 @@ def nec_4_m(n,e,c):
 
 def pqec_4_m(p,q,e,c):
     d = pqe_4_d(p,q,e)
-    print(d)
+    # print(d)
     s = ndc_4_m(p * q, d, c)
 
     return s
@@ -81,6 +134,7 @@ def pqec_4_m(p,q,e,c):
 #     print(a2)
 #
 #     return a1, a2
+
 
 def verify(rsa1, rsa2, data, sig):
     assert (rsa1.e == rsa2.e)
@@ -118,6 +172,13 @@ def pem(home, pubkey_file, enc_file):
         f = f.read()
         print(rsa.decrypt(f, key))
 
+def extract_pem(c_file, key_file):
+    c = bytes_to_long(open(c_file,'rb').read())
+    key = RSA.importKey(open(key_file, 'rb').read())
+    n,e=key.n,key.e
+    return n,e,c
+
+#广播攻击
 def hastad(n_l, c_l, attack_num):
     sum = 0
     prod = reduce(lambda a, b: a*b, n_l)
@@ -130,7 +191,7 @@ def hastad(n_l, c_l, attack_num):
     return bytes.fromhex(hex(m)[2:])
 
 # 共模攻击 使用不同的e、相同的n对相同的m进行多次加密
-def comomic_attack(n, e1,e2, c1,c2):
+def comomic_attack(n, e1, e2, c1,c2):
     s = gmpy2.gcdext(e1, e2)
     print(s)
     s1 = s[1]
@@ -145,7 +206,28 @@ def comomic_attack(n, e1,e2, c1,c2):
         c2 = gmpy2.invert(c2, n)
         # c2 = manual_invert(c2, n)
     m = pow(c1, s1, n)*pow(c2, s2, n)%n
-    print( '[-]m is:',long_to_bytes(m))
+    print( '[-]m is:',m)
+    return m
+
+
+# e不互素的共模攻击
+def comomic_attack_EnotRPrimes(n, e1, e2, c1, c2):
+    g,x,y = gmpy2.gcdext(e1, e2)
+    m = pow(c1, x, n) * pow(c2, y, n) % n
+    m = gmpy2.iroot(m, g)[0]
+    print('[-]m is:', long_to_bytes(m))
+    return m
+
+# g,x,y=gcdext(e1,e2)
+# m=pow(c1,x,n)*pow(c2,y,n)%n
+# m=iroot(m,2)[0]
+# print(long_to_bytes(m))
+
+# g,x,y=gcdext(e1,e2)
+# m=pow(c1,x,n)*pow(c2,y,n)%n
+# m=iroot(m,2)[0]
+# print(long_to_bytes(m))
+
 
 # 模不互素攻击
 def Modules_not_coprime(n1,n2,c1,c2,e):
@@ -196,13 +278,24 @@ if __name__ == '__main__':
     # comomic_attack(n,e1,e2,c1,c2)
 
     # NO.GFSJ0753 RSA_gcd
-    home = 'E:\\CTF\\CTFQD\\Crypto\\f1217fd42e8b43558077180e98c757d7\\attachment\\'
-    l1 = open(home + 'attach1.txt', 'r').readlines()
-    e = int(l1[1][2:8])
-    print(e)
-    n1 = int(l1[0][2:])
-    c1 = int(l1[3][2:])
-    l2 = open(home + 'attach2.txt', 'r').readlines()
-    n2 = int(l2[0][2:])
-    c2 = int(l2[3][2:])
-    Modules_not_coprime(n1,n2,c1,c2,e)
+    # home = 'E:\\CTF\\CTFQD\\Crypto\\f1217fd42e8b43558077180e98c757d7\\attachment\\'
+    # l1 = open(home + 'attach1.txt', 'r').readlines()
+    # e = int(l1[1][2:8])
+    # print(e)
+    # n1 = int(l1[0][2:])
+    # c1 = int(l1[3][2:])
+    # l2 = open(home + 'attach2.txt', 'r').readlines()
+    # n2 = int(l2[0][2:])
+    # c2 = int(l2[3][2:])
+    # Modules_not_coprime(n1,n2,c1,c2,e)
+
+    n = 27855350163093443890983002241607629119744539643165776358993469078731521668677421483556132628708836721737685936980427467856642738196111748018522018598646125626995613169001111504706363742194664774823604738939411512861441742683157275818500991834651769368178320088982759626122029956515159435424882855075032400667120376075618896752694718491438251810609878021717559466498493103257912108879328270813061231904227056671621363669388496383136964549879459562004569059185078204867346250733489663015417879915436157806942021693920206071715538430633494012923651469196048546309592946901609803631751035364478773126967010589504275776307
+    e1 = 3747
+    e2 = 2991
+    c1 = 24426579024062518665031958216110619832653602343205488454298659533869220501923184793828421371206493659949730138867555889074137026401207985428160803910695088081370233571905915349589146504374710444468715701305061060934519410886010929009297226496448218819742287990364436349188987723637449590579092391100714056589967894609950537021838172987840638735592599678186555961654312442380755963257875487240962193060914793587712733601168204859917001269928487633954556221987632934190217367502677285906521385169669644977192556145782303526375491484736352799180747403161343130663661867413380222714012960607473395828938694285120527085083
+    c2 = 6932145147126610816836065944280934160173362059462927112752295077225965836502881335565881607385328990881865436690904056577675885697508058289570333933837515526915707121125766720407153139160751343352211421901876051228566093038929625042619250168565502734932197817082848506826847112949495527533238122893297049985517280574646627011986403578166952789317461581409161873814203023736604394085875778774834314777046086921852377348590998381648241629124408514875110073073851913857329679268519229436092660959841766848676678740851087184214283196544821779336090434587905158006710112461778939184327386306992082433561460542130441825293
+
+    # print(myRSA.query_factors(n))
+    print(gmpy2.gcd(e1,e2))
+    m = comomic_attack_EnotRPrimes(n, e1, e2, c1, c2)
+    print(m)

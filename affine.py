@@ -1,6 +1,6 @@
 # 不仅适用于26个字母，还加上去其他符号
 import gmpy2
-import base
+import myBASE
 import re
 
 
@@ -61,7 +61,7 @@ def crack(enc, a_pad, b_pad, m_pad,table):
             for k in range(0,m_pad):
                 try:
                     s = generalized_decrypt(i,j,enc,table)
-                    flag = base.myb32decoder(s)
+                    flag = myBASE.myb32decoder(s)
                     # if b'{'in flag and b'}' in flag:
                     #     print(flag)
                     if re.match(b'^\w+([-+.]\w+)*\{\w+([-.]\w+)*\}$', flag):

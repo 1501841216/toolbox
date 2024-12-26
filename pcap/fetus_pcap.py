@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding=utf -*-
-import base
+import myBASE
 import pyshark
 from scapy.all import rdpcap
 
